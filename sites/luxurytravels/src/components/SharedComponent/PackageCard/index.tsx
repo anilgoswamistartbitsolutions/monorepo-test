@@ -1,9 +1,6 @@
 // "use client"
 import { Package } from "@/app/api/data";
-import { PackageType } from "@/types/package";
-import Link from "next/link";
-import Image from "next/image";
-import { apiCall } from '@/utils/apiCall';
+
 
 interface Package {
   image: string;
@@ -13,37 +10,33 @@ interface Package {
   review: string;
   rating: number;
   slug: string | any;
+  sites: string[];
+  seoDescription: string;
 }
 
-
-// async function fetchPackages(): Promise<Package[]> {
-//   const res = await fetch("http://localhost:3000/api/tours", {
-//     cache: "no-store", // or 'force-cache' if you want caching
-//   });
-//   if (!res.ok) {
-//     throw new Error("Failed to fetch tours");
-//   }
-//   const data = await res.json();
-//   return data.docs || data;
-// }
-
+async function fetchPackages(): Promise<Package[]> {
+  const res = await fetch(`${process.env.PAYLOAD_CMS_API_URL}/tours`, {
+    cache: "no-store", // or 'force-cache' if you want caching
+  });
+  if (!res.ok) {
+    throw new Error("Failed to fetch tours");
+  }
+  const data = await res.json();
+  return data.docs || data;
+}
 
 const PackageCard = async () => {
+  const packages = await fetchPackages();
 
-
-  // const packages = await fetchPackages();
-
-  // const filteredPackages = packages?.filter(pkg => pkg?.sites && pkg?.sites?.includes('holiday-deals'));
-
+  const filteredPackages = packages?.filter(
+    (pkg) => pkg?.sites && pkg?.sites?.includes("travel")
+  );
 
   // Helper function to render stars
   const renderStars = (rating: number) => {
     const fullStars = Math.floor(rating);
     const halfStar = rating % 1 >= 0.5;
     const emptyStars = 5 - fullStars - (halfStar ? 1 : 0);
-
-
-
 
     return (
       <div className="flex items-center">
@@ -108,9 +101,8 @@ const PackageCard = async () => {
   };
   return (
     <div className="grid sm:grid-cols-2 grid-cols-1 gap-8">
-      {/* {(filteredPackages ?? [])?.map((item, index) => (
-        <div key={index} >
-
+      {(filteredPackages ?? [])?.map((item, index) => (
+        <div key={index}>
           <div className="ms-4 mt-6">
             <p className="text-base text-grey mb-2">{item?.duration}</p>
             <h4 className="text-midnight_text text-2xl group-hover:text-primary dark:text-white">
@@ -126,7 +118,7 @@ const PackageCard = async () => {
             </div>
           </div>
         </div>
-      ))} */}
+      ))}
     </div>
   );
 };

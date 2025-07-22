@@ -69,7 +69,7 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
-    blog: Blog;
+    blogs: Blog;
     tours: Tour;
     destinations: Destination;
     reviews: Review;
@@ -82,7 +82,7 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
-    blog: BlogSelect<false> | BlogSelect<true>;
+    blogs: BlogsSelect<false> | BlogsSelect<true>;
     tours: ToursSelect<false> | ToursSelect<true>;
     destinations: DestinationsSelect<false> | DestinationsSelect<true>;
     reviews: ReviewsSelect<false> | ReviewsSelect<true>;
@@ -168,7 +168,7 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "blog".
+ * via the `definition` "blogs".
  */
 export interface Blog {
   id: number;
@@ -194,6 +194,12 @@ export interface Blog {
     [k: string]: unknown;
   };
   coverImage: number | Media;
+  categories?:
+    | {
+        category: string;
+        id?: string | null;
+      }[]
+    | null;
   tags?:
     | {
         tag: string;
@@ -327,7 +333,7 @@ export interface PayloadLockedDocument {
         value: number | Media;
       } | null)
     | ({
-        relationTo: 'blog';
+        relationTo: 'blogs';
         value: number | Blog;
       } | null)
     | ({
@@ -430,9 +436,9 @@ export interface MediaSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "blog_select".
+ * via the `definition` "blogs_select".
  */
-export interface BlogSelect<T extends boolean = true> {
+export interface BlogsSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
   author?: T;
@@ -441,6 +447,12 @@ export interface BlogSelect<T extends boolean = true> {
   excerpt?: T;
   content?: T;
   coverImage?: T;
+  categories?:
+    | T
+    | {
+        category?: T;
+        id?: T;
+      };
   tags?:
     | T
     | {

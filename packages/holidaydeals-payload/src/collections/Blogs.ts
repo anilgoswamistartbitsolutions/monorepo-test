@@ -1,7 +1,7 @@
 import type { CollectionConfig } from 'payload';
 
 export const Blog: CollectionConfig = {
-  slug: 'blog',
+  slug: 'blogs',
   admin: {
     useAsTitle: 'title',
   },
@@ -58,6 +58,17 @@ export const Blog: CollectionConfig = {
       type: 'upload',
       relationTo: 'media',
       required: true,
+    },
+    {
+      name: 'categories',
+      type: 'array',
+      fields: [
+        {
+          name: 'category',
+          type: 'text',
+          required: true,
+        },
+      ],
     },
     {
       name: 'tags',
