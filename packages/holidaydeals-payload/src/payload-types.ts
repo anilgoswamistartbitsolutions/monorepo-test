@@ -69,6 +69,11 @@ export interface Config {
   collections: {
     users: User;
     media: Media;
+    blog: Blog;
+    tours: Tour;
+    destinations: Destination;
+    reviews: Review;
+    bookings: Booking;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -77,6 +82,11 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    blog: BlogSelect<false> | BlogSelect<true>;
+    tours: ToursSelect<false> | ToursSelect<true>;
+    destinations: DestinationsSelect<false> | DestinationsSelect<true>;
+    reviews: ReviewsSelect<false> | ReviewsSelect<true>;
+    bookings: BookingsSelect<false> | BookingsSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -158,6 +168,151 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog".
+ */
+export interface Blog {
+  id: number;
+  title: string;
+  slug: string;
+  author: number | User;
+  publishedDate: string;
+  status: 'draft' | 'published' | 'archived';
+  excerpt: string;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  coverImage: number | Media;
+  tags?:
+    | {
+        tag: string;
+        id?: string | null;
+      }[]
+    | null;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
+  /**
+   * Select which website(s) this tour should appear on
+   */
+  sites: ('holiday-deals' | 'travel')[];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tours".
+ */
+export interface Tour {
+  id: number;
+  name: string;
+  slug: string;
+  location: string;
+  duration: string;
+  price: string;
+  review?: string | null;
+  no_review?: number | null;
+  rating: number;
+  image: number | Media;
+  description?: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
+  /**
+   * Select which website(s) this tour should appear on
+   */
+  sites: ('holiday-deals' | 'travel')[];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "destinations".
+ */
+export interface Destination {
+  id: number;
+  title: string;
+  slug: string;
+  image: number | Media;
+  count: number;
+  category: 'hiking' | 'outdoor' | 'beach' | 'pilgrimage' | 'other';
+  featured?: boolean | null;
+  description?: string | null;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
+  /**
+   * Select which website(s) this tour should appear on
+   */
+  sites: ('holiday-deals' | 'travel')[];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reviews".
+ */
+export interface Review {
+  id: number;
+  tour: number | Tour;
+  reviewerName: string;
+  reviewerEmail?: string | null;
+  rating: number;
+  reviewText: string;
+  status: 'pending' | 'approved' | 'rejected';
+  /**
+   * Select which website(s) this tour should appear on
+   */
+  sites: ('holiday-deals' | 'travel')[];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "bookings".
+ */
+export interface Booking {
+  id: number;
+  tour: number | Tour;
+  userEmail: string;
+  userName: string;
+  userPhone?: string | null;
+  startDate: string;
+  endDate: string;
+  numberOfGuests: number;
+  status: 'pending' | 'confirmed' | 'cancelled';
+  notes?: string | null;
+  /**
+   * Select which website(s) this tour should appear on
+   */
+  sites: ('holiday-deals' | 'travel')[];
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-locked-documents".
  */
 export interface PayloadLockedDocument {
@@ -170,6 +325,26 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'media';
         value: number | Media;
+      } | null)
+    | ({
+        relationTo: 'blog';
+        value: number | Blog;
+      } | null)
+    | ({
+        relationTo: 'tours';
+        value: number | Tour;
+      } | null)
+    | ({
+        relationTo: 'destinations';
+        value: number | Destination;
+      } | null)
+    | ({
+        relationTo: 'reviews';
+        value: number | Review;
+      } | null)
+    | ({
+        relationTo: 'bookings';
+        value: number | Booking;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -252,6 +427,103 @@ export interface MediaSelect<T extends boolean = true> {
   height?: T;
   focalX?: T;
   focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "blog_select".
+ */
+export interface BlogSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  author?: T;
+  publishedDate?: T;
+  status?: T;
+  excerpt?: T;
+  content?: T;
+  coverImage?: T;
+  tags?:
+    | T
+    | {
+        tag?: T;
+        id?: T;
+      };
+  seoTitle?: T;
+  seoDescription?: T;
+  sites?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "tours_select".
+ */
+export interface ToursSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  location?: T;
+  duration?: T;
+  price?: T;
+  review?: T;
+  no_review?: T;
+  rating?: T;
+  image?: T;
+  description?: T;
+  seoTitle?: T;
+  seoDescription?: T;
+  sites?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "destinations_select".
+ */
+export interface DestinationsSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  image?: T;
+  count?: T;
+  category?: T;
+  featured?: T;
+  description?: T;
+  seoTitle?: T;
+  seoDescription?: T;
+  sites?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reviews_select".
+ */
+export interface ReviewsSelect<T extends boolean = true> {
+  tour?: T;
+  reviewerName?: T;
+  reviewerEmail?: T;
+  rating?: T;
+  reviewText?: T;
+  status?: T;
+  sites?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "bookings_select".
+ */
+export interface BookingsSelect<T extends boolean = true> {
+  tour?: T;
+  userEmail?: T;
+  userName?: T;
+  userPhone?: T;
+  startDate?: T;
+  endDate?: T;
+  numberOfGuests?: T;
+  status?: T;
+  notes?: T;
+  sites?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

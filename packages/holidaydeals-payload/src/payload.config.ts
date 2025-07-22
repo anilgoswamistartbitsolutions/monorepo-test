@@ -9,6 +9,15 @@ import sharp from 'sharp'
 
 import { Users } from './collections/Users'
 import { Media } from './collections/Media'
+import { Blog } from './collections/Blogs'
+import { Tours } from './collections/Tours'
+import { Destination } from './collections/Destination'
+
+import { Booking } from './collections/Booking'
+import { Review } from './collections/Review'
+
+import toursPaginatedHandler from './payload/custom-endpoints/tours-paginated';
+
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -20,7 +29,14 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  collections: [Users, Media],
+  endpoints: [
+    {
+      path: '/tours-paginated',
+      method: 'get',
+      handler: toursPaginatedHandler,
+    },
+  ],
+  collections: [Users, Media,Blog, Tours, Destination, Review, Booking],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
