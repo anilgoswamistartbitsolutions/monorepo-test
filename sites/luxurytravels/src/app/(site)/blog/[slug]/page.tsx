@@ -104,7 +104,7 @@ export default async function Post({ params }: any) {
                     key={category?.id}
                     tabIndex={0}
                     className="border border-gray-300 rounded-full px-2 py-1 text-center font-medium cursor-pointer select-none
-                 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-dark dark:text-white"
                   >
                     {category?.category}
                   </div>

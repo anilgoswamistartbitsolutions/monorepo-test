@@ -29,7 +29,6 @@ export default function Home() {
         searchForm={true}
         variant="luxury"
       />
-      <div style={{width:"100%",height:"300px"}} className="bg-yellow-100"></div>
       <Destination />
       <FeaturesSlider />
       <PackageSlider />
