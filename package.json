@@ -3,10 +3,7 @@
   "version": "1.0.0",
   "private": true,
   "packageManager": "pnpm@10.13.1",
-  "workspaces": [
-    "sites/*",
-    "packages/*"
-  ],
+  
   "scripts": {
     "dev": "echo \"Use --filter to run workspace apps\"",
     "test": "echo \"No tests at root\""
