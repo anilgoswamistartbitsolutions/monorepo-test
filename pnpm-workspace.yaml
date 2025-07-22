@@ -1,5 +1,5 @@
 packages:
   - "packages/shared-utils"
   - "packages/ui-components"
-  - "packages/holiday-payload-cms"
+  - "packages/holidaydeals-payload"
   - "sites/*"
