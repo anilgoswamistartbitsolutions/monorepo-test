@@ -1,0 +1,196 @@
+@import 'tailwindcss';
+
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --container-screen-xl: 75rem;
+  --container-screen-2xl: 83.75rem;
+
+  --shadow-filter_shadow: 0 0px 30px rgba(24, 23, 23, 0.1);
+  --shadow-darkmd: rgba(145, 158, 171, 0.2) 0px 0px 2px 0px,
+    rgba(145, 158, 171, 0.12) 0px 12px 24px -4px;
+
+  --transition-duration-150: 150ms;
+
+  --spacing-6xl: 75rem;
+  --spacing-7xl: 83.75rem;
+  --spacing-25: 25rem;
+  --spacing-29: 28rem;
+  --spacing-41: 40rem;
+  --spacing-45: 45rem;
+  --spacing-50: 50rem;
+  --spacing-94: 22.5rem;
+  --spacing-120: 120rem;
+  --spacing-6_25: 6.25rem;
+  --spacing-70\%: 70%;
+  --spacing-40\%: 40%;
+  --spacing-47\%: 47%;
+  --spacing-45\%: 45%;
+  --spacing-30\%: 30%;
+  --spacing-60\%: 60%;
+  --spacing-8_5: 8.5rem;
+  --spacing-3_75: 3.75rem;
+
+  --height-150: 750px;
+  --height-6_25: 6.25rem;
+
+  --leading-extra-loose: 2.5;
+  --leading-2_5: 2.5rem;
+
+  --inset-5\%: 5%;
+  --inset-35\%: 35%;
+
+  --z-index-1: 1;
+  --z-index-2: 2;
+  --z-index-999: 999;
+
+  --color-primary: #2f73f2;
+  --color-secondary: #547593;
+  --color-danger: #dc3545;
+  --color-midnight_text: #102d47;
+  --color-grey: #668199;
+  --color-border: #ccd7e1;
+  --color-success: #3cd278;
+  --color-section: #f8fafc;
+  --color-darkmode: #111928;
+  --color-darklight: #1f2a37;
+  --color-dark_border: #224767;
+  --color-yellow: #f9c78f;
+  --color-herobg: #f2efff;
+  --color-semidark: #151f31;
+  --color-SkyBlueMist: #c0d5fb;
+
+  --text-100: 6.25rem;
+  --text-100--line-height: 6.375rem;
+
+  --blur-250: 250px;
+}
+
+/*
+  The default border color has changed to `currentColor` in Tailwind CSS v4,
+  so we've added these compatibility styles to make sure everything still
+  looks the same as it did with Tailwind CSS v3.
+
+  If we ever want to remove these styles, we need to add an explicit border
+  color utility to any element that depends on these defaults.
+*/
+@layer base {
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--color-gray-200, currentColor);
+  }
+}
+
+@layer components {
+  body {
+    @apply text-base overflow-x-hidden font-normal;
+    -webkit-text-size-adjust: 100%;
+  }
+  html {
+    @apply dark:bg-darkmode overflow-x-hidden;
+  }
+
+  textarea,
+  input[type='text'],
+  input[type='number'],
+  input[type='email'],
+  input[type='tel'],
+  select {
+    @apply block outline-hidden text-base font-normal text-midnight_text m-0 rounded-[0.375rem] w-full placeholder:text-grey;
+  }
+
+  h1 {
+    @apply md:text-[50px] md:leading-[4.3rem] text-[28px] leading-[2.25rem] font-bold text-midnight_text dark:text-white;
+  }
+
+  h2 {
+    @apply md:text-[40px] leading-[3rem] text-2xl font-bold text-midnight_text dark:text-white;
+  }
+
+  h3 {
+    @apply md:text-[28px] leading-[2.25rem] text-lg font-bold text-white dark:text-primary;
+  }
+
+  h4 {
+    @apply text-2xl font-bold text-midnight_text dark:text-primary;
+  }
+
+  h5 {
+    @apply text-[22px] leading-[2rem] font-medium text-midnight_text dark:text-primary;
+  }
+
+  section {
+    @apply lg:py-12 py-10;
+  }
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+.blog-details p,
+.blog-details hr {
+  @apply mb-8;
+}
+
+.blog-details hr {
+  @apply dark:border-dark_border;
+}
+
+.blog-details strong {
+  @apply font-bold dark:text-white;
+}
+
+.blog-details ul {
+  @apply mb-8 list-inside list-disc space-y-3;
+}
+
+.blog-details ol {
+  @apply mb-8 list-inside list-decimal space-y-3;
+}
+
+.blog-details h1 {
+  @apply mb-8 text-3xl font-bold text-midnight_text dark:text-white sm:text-4xl md:text-[40px] md:leading-[1.28];
+}
+
+.blog-details h2 {
+  @apply mb-8 text-2xl font-bold text-midnight_text dark:text-white sm:text-3xl md:text-[35px] md:leading-[1.28];
+}
+
+.blog-details h3 {
+  @apply mb-6 text-2xl font-bold dark:text-white sm:text-[28px] sm:leading-[40px];
+}
+
+/* accordion */
+
+.accordion__item:not(:last-child) {
+  @apply border-b-border dark:border-dark_border border-b border-solid;
+}
+
+.accordion__item--active .accordion__btn {
+  @apply text-primary dark:text-primary;
+}
+
+.accordion__item--active .accordion__content {
+  @apply opacity-100 duration-300 translate-x-0 max-h-full;
+}
+
+.accordion__item--active .accordion__content {
+  @apply opacity-100 duration-300 max-h-[50rem] translate-y-0;
+}
+
+.icon-fill {
+  fill: var(--icon-color);
+}
+
+.light .icon-fill {
+  --icon-color: #102d47;
+}
+
+.dark .icon-fill {
+  --icon-color: #ffffff;
+}

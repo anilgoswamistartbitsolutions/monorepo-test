@@ -2,4 +2,5 @@ packages:
   - "packages/shared-utils"
   - "packages/ui-components"
   - "packages/holidaydeals-payload"
-  - "sites/*"
+  - "sites/holidaydeals"
+  - "sites/luxurytravels"

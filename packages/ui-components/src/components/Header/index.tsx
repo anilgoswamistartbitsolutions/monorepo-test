@@ -83,7 +83,7 @@ const Header: React.FC<HeaderProps> = ({
           {logoImage ? (
             <img src={logoImage} style={{width:"150px", height:"70px"}} alt={logoText} className='h-8' />
           ) : (
-            <span className={`text-2xl font-bold ${variantClasses[variant]} ${!sticky && pathUrl === '/' ? 'text-white' : ''
+            <span className={`text-2xl font-bold ${variantClasses[variant]}  ${!sticky && pathUrl === '/' ? '' : ''
               }`}>
               {logoText}
             </span>
@@ -99,7 +99,7 @@ const Header: React.FC<HeaderProps> = ({
                 className={`text-base font-medium hover:text-primary transition-colors ${pathUrl === item.path
                   ? 'text-primary'
                   : !sticky && pathUrl === '/'
-                    ? 'text-white hover:text-primary'
+                    ? ' hover:text-primary'
                     : 'text-midnight_text dark:text-white hover:text-primary'
                   }`}>
                 {item.title}
@@ -149,9 +149,9 @@ const Header: React.FC<HeaderProps> = ({
             onClick={() => setNavbarOpen(!navbarOpen)}
             className='block lg:hidden p-2 rounded-lg'
             aria-label='Toggle mobile menu'>
-            <span className={`block w-6 h-0.5 ${!sticky && pathUrl === '/' ? 'bg-white' : 'bg-black dark:bg-white'}`}></span>
-            <span className={`block w-6 h-0.5 ${!sticky && pathUrl === '/' ? 'bg-white' : 'bg-black dark:bg-white'} mt-1.5`}></span>
-            <span className={`block w-6 h-0.5 ${!sticky && pathUrl === '/' ? 'bg-white' : 'bg-black dark:bg-white'} mt-1.5`}></span>
+            <span className={`block w-6 h-0.5 ${!sticky && pathUrl === '/' ? 'bg-black dark:bg-white' : 'bg-black dark:bg-white'}`}></span>
+            <span className={`block w-6 h-0.5 ${!sticky && pathUrl === '/' ? 'bg-black dark:bg-white' : 'bg-black dark:bg-white'} mt-1.5`}></span>
+            <span className={`block w-6 h-0.5 ${!sticky && pathUrl === '/' ? 'bg-black dark:bg-white' : 'bg-black dark:bg-white'} mt-1.5`}></span>
           </button>
         </div>
       </div>
