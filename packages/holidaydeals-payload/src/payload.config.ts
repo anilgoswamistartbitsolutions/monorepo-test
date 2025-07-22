@@ -16,7 +16,7 @@ import { Destination } from './collections/Destination'
 import { Booking } from './collections/Booking'
 import { Review } from './collections/Review'
 
-import toursPaginatedHandler from './payload/custom-endpoints/tours-paginated';
+// import toursPaginatedHandler from './payload/custom-endpoints/tours-paginated';
 
 
 const filename = fileURLToPath(import.meta.url)
@@ -29,13 +29,13 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  endpoints: [
-    {
-      path: '/tours-paginated',
-      method: 'get',
-      handler: toursPaginatedHandler,
-    },
-  ],
+  // endpoints: [
+  //   {
+  //     path: '/tours-paginated',
+  //     method: 'get',
+  //     handler: toursPaginatedHandler,
+  //   },
+  // ],
   collections: [Users, Media,Blog, Tours, Destination, Review, Booking],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
