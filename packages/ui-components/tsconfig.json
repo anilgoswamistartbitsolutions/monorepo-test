@@ -17,6 +17,11 @@
     "declarationMap": true,
     "outDir": "dist",
     "rootDir": "src",
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
     "paths": {
       "@/*": ["./src/*"]
     }

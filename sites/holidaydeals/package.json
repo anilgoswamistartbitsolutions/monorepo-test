@@ -1,5 +1,5 @@
 {
-  "name": "holidaydeals-sites",
+  "name": "@travel-platform/holiday-deals",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -12,8 +12,8 @@
     "@iconify/icons-ion": "^1.2.10",
     "@iconify/react": "^6.0.0",
     "@tailwindcss/postcss": "^4.1.11",
-    "@types/aos": "^3.0.7",
-    "@types/react-slick": "^0.23.13",
+    "@travel-platform/shared-utils": "workspace:*",
+    "@travel-platform/ui-components": "workspace:*",
     "aos": "^2.3.4",
     "axios": "^1.10.0",
     "date-fns": "^4.1.0",
@@ -31,15 +31,14 @@
     "remark-html": "^16.0.1",
     "slick-carousel": "^1.8.1",
     "swiper": "^11.2.10",
-    "tailwindcss": "^4.1.11",
-    "@travel-platform/shared-utils": "workspace:*",
-    "@travel-platform/ui-components": "workspace:*"
+    "tailwindcss": "^4.1.11"
   },
   "devDependencies": {
-    "@eslint/eslintrc": "^3",
+    "@types/aos": "^3.0.7",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@types/react-slick": "^0.23.13",
     "eslint": "^9",
     "eslint-config-next": "15.4.2",
     "typescript": "^5"
