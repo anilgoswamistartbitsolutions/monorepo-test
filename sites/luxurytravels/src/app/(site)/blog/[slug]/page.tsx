@@ -99,7 +99,7 @@ export default async function Post({ params }: any) {
                 {post.title}
               </h2>
               <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 p-4">
-                {post?.categories.map((category) => (
+                {post?.categories?.map((category) => (
                   <div
                     key={category?.id}
                     tabIndex={0}
