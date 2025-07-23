@@ -1,3 +1,5 @@
+
+
 :root {
   --font-mono: 'Roboto Mono', monospace;
 }
@@ -161,4 +163,89 @@ svg {
       border-radius: 4px;
     }
   }
+}
+
+
+.main-page {
+  position: relative;
+  height: 100vh;
+  background: url('/images/travel-bg.jpg') center/cover no-repeat;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  color: #f0f0f0;
+}
+
+.main-page__overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+}
+
+.main-page__content {
+  position: relative;
+  z-index: 1;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  padding: 2rem;
+}
+
+.main-page__logo {
+  animation: main-page-fade-in 1s ease-out;
+  margin-bottom: 1rem;
+}
+
+.main-page__headline {
+  font-size: 2.5rem;
+  font-weight: 700;
+  text-shadow: 0 0 15px rgba(0, 179, 200, 0.8);
+  margin-bottom: 1rem;
+  animation: main-page-fade-in-down 1s ease-out;
+}
+
+.main-page__subline {
+  font-size: 1.1rem;
+  opacity: 0.85;
+  margin-bottom: 2rem;
+  animation: main-page-fade-in-up 1s ease-out 0.3s;
+}
+
+.main-page__btn {
+  background-color: #00b3c8;
+  color: white;
+  padding: 0.9rem 2rem;
+  font-size: 1rem;
+  font-weight: 600;
+  border-radius: 8px;
+  text-decoration: none;
+  box-shadow: 0 4px 15px rgba(0, 179, 200, 0.4);
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  animation: main-page-pulse 2s infinite 1s;
+}
+.main-page__btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 179, 200, 0.6);
+}
+
+/* Scoped Animations */
+@keyframes main-page-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes main-page-fade-in-down {
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes main-page-fade-in-up {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes main-page-pulse {
+  0%, 100% { box-shadow: 0 4px 15px rgba(0, 179, 200, 0.4); }
+  50% { box-shadow: 0 8px 25px rgba(0, 179, 200, 0.8); }
 }
