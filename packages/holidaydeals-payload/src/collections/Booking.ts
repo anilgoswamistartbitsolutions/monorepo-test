@@ -74,7 +74,7 @@ export const Booking: CollectionConfig = {
       defaultValue: ['all'],
       options: [
         { label: 'Holiday Deals', value: 'holiday-deals' },
-        { label: 'Travel', value: 'travel' },
+        { label: 'Luxury Travel', value: 'luxury-travel' },
       ],
       admin: {
         description: 'Select which website(s) this tour should appear on',

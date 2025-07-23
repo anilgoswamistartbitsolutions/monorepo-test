@@ -2,22 +2,26 @@
 import { postgresAdapter } from '@payloadcms/db-postgres'
 import { payloadCloudPlugin } from '@payloadcms/payload-cloud'
 import { lexicalEditor } from '@payloadcms/richtext-lexical'
+import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
+
 import path from 'path'
 import { buildConfig } from 'payload'
 import { fileURLToPath } from 'url'
 import sharp from 'sharp'
+import type { SharpDependency } from 'payload';
 
-import { Users } from './collections/Users'
 import { Media } from './collections/Media'
-import { Blog } from './collections/Blogs'
+import { Users } from './collections/Users'
+import { Category } from './collections/Category'
+
+import { Blog } from './collections/Blog'
 import { Tours } from './collections/Tours'
 import { Destination } from './collections/Destination'
 
 import { Booking } from './collections/Booking'
 import { Review } from './collections/Review'
-
+import { FrontEndIntegration } from './collections/FrontEndIntegration'
 // import toursPaginatedHandler from './payload/custom-endpoints/tours-paginated';
-
 
 const filename = fileURLToPath(import.meta.url)
 const dirname = path.dirname(filename)
@@ -36,7 +40,17 @@ export default buildConfig({
   //     handler: toursPaginatedHandler,
   //   },
   // ],
-  collections: [Users, Media,Blog, Tours, Destination, Review, Booking],
+  collections: [
+    Media,
+    Users,
+    Category,
+    Blog,
+    Tours,
+    Destination,
+    Review,
+    Booking,
+    FrontEndIntegration,
+  ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {
@@ -47,9 +61,17 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URI || '',
     },
   }),
-  sharp,
+  sharp: sharp as unknown as SharpDependency,
   plugins: [
     payloadCloudPlugin(),
+    vercelBlobStorage({
+      enabled: true,
+      collections: {
+        // If you have another collection that supports uploads, you can add it below
+        media: true,
+      },
+      token: process.env.VERCEL_BLOB_TOKEN,
+    }),
     // storage-adapter-placeholder
   ],
 })

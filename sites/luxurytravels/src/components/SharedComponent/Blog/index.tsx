@@ -3,9 +3,19 @@ import Link from "next/link";
 import BlogCard from "./blogCard";
 
 import { Blog as BlogType } from "@/types/blog";
-
+import qs from "qs";
 async function fetchBlogPost(): Promise<BlogType[]> {
-  const res = await fetch(`${process.env.PAYLOAD_CMS_API_URL}/blogs`, {
+  const query = qs.stringify(
+    {
+      where: {
+        sites: {
+          in: ["all", "luxury-travel"],
+        },
+      },
+    },
+    { encodeValuesOnly: true }
+  );
+  const res = await fetch(`${process.env.PAYLOAD_CMS_API_URL}/blogs?${query}`, {
     cache: "no-store", // or 'force-cache' if you want caching
   });
   if (!res.ok) {
@@ -15,11 +25,9 @@ async function fetchBlogPost(): Promise<BlogType[]> {
   return data.docs || data;
 }
 const Blog: React.FC = async () => {
-   const blogPosts = await fetchBlogPost();
+  const blogPosts = await fetchBlogPost();
 
-  const filteredBlogPosts = blogPosts?.filter(
-    (post) => post?.sites && post?.sites?.includes("travel")
-  );
+  const filteredBlogPosts = blogPosts;
   return (
     <section className="flex flex-wrap justify-center dark:bg-semidark">
       <div className="container mx-auto max-w-6xl lg:px-0 px-4">

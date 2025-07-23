@@ -2,9 +2,19 @@ import React from "react";
 import BlogCard from "@/components/SharedComponent/Blog/blogCard";
 import { getAllPosts } from "@/utils/markdown";
 import { Blog } from "@/types/blog";
-
+import qs from "qs";
 async function fetchBlogPost(): Promise<Blog[]> {
-  const res = await fetch(`${process.env.PAYLOAD_CMS_API_URL}/blogs`, {
+  const query = qs.stringify(
+    {
+      where: {
+        sites: {
+          in: ["all", "luxury-travel"],
+        },
+      },
+    },
+    { encodeValuesOnly: true }
+  );
+  const res = await fetch(`${process.env.PAYLOAD_CMS_API_URL}/blogs?${query}`, {
     cache: "no-store", // or 'force-cache' if you want caching
   });
   if (!res.ok) {
@@ -17,9 +27,7 @@ async function fetchBlogPost(): Promise<Blog[]> {
 const BlogList: React.FC = async () => {
   const blogPosts = await fetchBlogPost();
 
-  const filteredBlogPosts = blogPosts?.filter(
-    (post) => post?.sites && post?.sites?.includes("travel")
-  );
+  const filteredBlogPosts = blogPosts;
 
   return (
     <section

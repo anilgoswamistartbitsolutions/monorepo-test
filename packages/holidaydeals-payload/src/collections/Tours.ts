@@ -1,9 +1,10 @@
-import type { CollectionConfig } from 'payload';
+import type { CollectionConfig } from 'payload'
+import { seoGroup, siteSelection, tagField } from '@/constants/fields'
 
 export const Tours: CollectionConfig = {
   slug: 'tours',
   admin: {
-    useAsTitle: 'name',
+    useAsTitle: 'title',
   },
   access: {
     read: () => true,
@@ -11,7 +12,7 @@ export const Tours: CollectionConfig = {
   timestamps: true,
   fields: [
     {
-      name: 'name',
+      name: 'title',
       type: 'text',
       required: true,
     },
@@ -22,69 +23,183 @@ export const Tours: CollectionConfig = {
       unique: true,
     },
     {
-      name: 'location',
-      type: 'text',
-      required: true,
-    },
-    {
-      name: 'duration',
-      type: 'text',
-      required: true,
-    },
-    {
-      name: 'price',
-      type: 'text', // You could also use type: 'number' if you want to store price numerically
-      required: true,
-    },
-    {
-      name: 'review',
-      type: 'text',
-    },
-    {
-      name: 'no_review',
-      type: 'number',
-      label: 'Number of Reviews',
-    },
-    {
-      name: 'rating',
-      type: 'number',
-      min: 0,
-      max: 5,
-   
-      required: true,
-    },
-    {
-      name: 'image',
-      type: 'upload',
-      relationTo: 'media',
-      required: true,
-    },
-    {
       name: 'description',
-      type: 'richText',
-    },
-    {
-      name: 'seoTitle',
-      type: 'text',
-    },
-    {
-      name: 'seoDescription',
       type: 'textarea',
     },
     {
-      name: 'sites',
-      type: 'select',
-      hasMany: true,
+      name: 'content',
+      type: 'richText',
       required: true,
-      defaultValue: ['all'],
-      options: [
-        { label: 'Holiday Deals', value: 'holiday-deals' },
-        { label: 'Travel', value: 'travel' }
-      ],
+    },
+    {
+      name: 'gallery',
+      label: 'Gallery',
+      type: 'upload',
+      relationTo: 'media',
+      hasMany: true,
+      required: false,
       admin: {
-        description: 'Select which website(s) this tour should appear on',
+        description: 'Upload multiple images to display as a gallery',
       },
     },
-  ],
+    {
+      name: 'featured',
+      type: 'checkbox',
+      label: 'Is Featured?',
+      defaultValue: false,
+      // removed admin.hidden
+    },
 
-};
+    {
+      name: 'pricing',
+      label: 'Pricing',
+      type: 'group',
+      fields: [
+        {
+          name: 'basePrice',
+          type: 'number',
+          required: true,
+          label: 'Base Price',
+        },
+        {
+          name: 'currency',
+          type: 'text',
+          required: true,
+          label: 'Currency (e.g., USD)',
+        },
+        {
+          name: 'priceIncludes',
+          type: 'array',
+          label: 'Price Includes',
+          fields: [
+            {
+              name: 'item',
+              type: 'text',
+              required: true,
+            },
+          ],
+        },
+        {
+          name: 'priceExcludes',
+          type: 'array',
+          label: 'Price Excludes',
+          fields: [
+            {
+              name: 'item',
+              type: 'text',
+              required: true,
+            },
+          ],
+        },
+      ],
+    },
+
+    // DURATION
+    {
+      name: 'duration',
+      label: 'Duration',
+      type: 'group',
+      fields: [
+        {
+          name: 'days',
+          type: 'number',
+          required: true,
+        },
+        {
+          name: 'nights',
+          type: 'number',
+          required: true,
+        },
+      ],
+    },
+
+    // ITINERARY
+    {
+      name: 'itinerary',
+      label: 'Itinerary',
+      type: 'array',
+      required: true,
+      fields: [
+        {
+          name: 'day',
+          type: 'number',
+          required: true,
+          label: 'Day Number',
+        },
+        {
+          name: 'title',
+          type: 'text',
+          required: true,
+        },
+        {
+          name: 'description',
+          type: 'textarea',
+          required: true,
+        },
+        {
+          name: 'activities',
+          type: 'array',
+          label: 'Activities',
+          fields: [
+            {
+              name: 'activity',
+              type: 'text',
+              required: true,
+            },
+          ],
+        },
+      ],
+    },
+
+    // DESTINATIONS
+    {
+      name: 'destinations',
+      type: 'relationship',
+      relationTo: 'destinations',
+      hasMany: true,
+      required: true,
+      label: 'Destinations',
+    },
+
+    // CATEGORIES
+    {
+      name: 'categories',
+      type: 'relationship',
+      relationTo: 'categories',
+      hasMany: true,
+      required: true,
+      label: 'Categories',
+    },
+
+    // AVAILABILITY
+    {
+      name: 'availability',
+      label: 'Availability Periods',
+      type: 'array',
+      fields: [
+        {
+          name: 'startDate',
+          type: 'date',
+          required: true,
+        },
+        {
+          name: 'endDate',
+          type: 'date',
+          required: true,
+        },
+        {
+          name: 'minPeople',
+          type: 'number',
+          required: true,
+        },
+        {
+          name: 'maxPeople',
+          type: 'number',
+          required: true,
+        },
+      ],
+    },
+    siteSelection,
+    seoGroup,
+  ],
+}

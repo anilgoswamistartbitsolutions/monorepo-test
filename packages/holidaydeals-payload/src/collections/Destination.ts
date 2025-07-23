@@ -1,4 +1,5 @@
-import type { CollectionConfig } from 'payload';
+import type { CollectionConfig } from 'payload'
+import { seoGroup, siteSelection, tagField } from '@/constants/fields'
 
 export const Destination: CollectionConfig = {
   slug: 'destinations',
@@ -13,6 +14,7 @@ export const Destination: CollectionConfig = {
     {
       name: 'title',
       type: 'text',
+      label: 'Name',
       required: true,
     },
     {
@@ -22,60 +24,80 @@ export const Destination: CollectionConfig = {
       unique: true,
     },
     {
-      name: 'image',
+      name: 'description',
+      type: 'textarea',
+      label: 'Description',
+    },
+    {
+      name: 'content',
+      type: 'richText',
+      label: 'Content',
+      required: true,
+    },
+    {
+      name: 'country',
+      type: 'text',
+      required: true,
+    },
+    {
+      name: 'region',
+      type: 'text',
+      required: true,
+    },
+    {
+      name: 'coordinates',
+      label: 'Coordinates',
+      type: 'group',
+      fields: [
+        {
+          name: 'lat',
+          type: 'number',
+          required: true,
+          label: 'Latitude',
+        },
+        {
+          name: 'lng',
+          type: 'number',
+          required: true,
+          label: 'Longitude',
+        },
+      ],
+    },
+    {
+      name: 'gallery',
+      label: 'Gallery',
       type: 'upload',
       relationTo: 'media',
-      required: true,
+      hasMany: true,
+      required: false,
+      admin: {
+        description: 'Upload multiple images to display as a gallery',
+      },
     },
     {
-      name: 'count',
-      type: 'number',
-      required: true,
-      label: 'Number of Destinations',
-    },
-    {
-      name: 'category',
-      type: 'select',
-      options: [
-        { label: 'Hiking', value: 'hiking' },
-        { label: 'Outdoor', value: 'outdoor' },
-        { label: 'Beach', value: 'beach' },
-        { label: 'Pilgrimage', value: 'pilgrimage' },
-        { label: 'Other', value: 'other' },
+      name: 'attractions',
+      type: 'array',
+      label: 'Attractions',
+      fields: [
+        {
+          name: 'attraction',
+          type: 'text',
+          required: true,
+        },
       ],
-      required: true,
+    },
+    {
+      name: 'bestTimeToVisit',
+      type: 'text',
+      label: 'Best Time To Visit',
     },
     {
       name: 'featured',
       type: 'checkbox',
-      label: 'Featured on homepage',
+      label: 'Is Featured?',
       defaultValue: false,
     },
-    {
-      name: 'description',
-      type: 'textarea',
-    },
-    {
-      name: 'seoTitle',
-      type: 'text',
-    },
-    {
-      name: 'seoDescription',
-      type: 'textarea',
-    },
-    {
-      name: 'sites',
-      type: 'select',
-      hasMany: true,
-      required: true,
-      defaultValue: ['all'],
-      options: [
-        { label: 'Holiday Deals', value: 'holiday-deals' },
-        { label: 'Travel', value: 'travel' },
-      ],
-      admin: {
-        description: 'Select which website(s) this tour should appear on',
-      },
-    },
+    siteSelection,
+    seoGroup,
   ],
-};
+}

@@ -64,29 +64,34 @@ export type SupportedTimezones =
 export interface Config {
   auth: {
     users: UserAuthOperations;
+    'front-end-integration': FrontEndIntegrationAuthOperations;
   };
   blocks: {};
   collections: {
-    users: User;
     media: Media;
+    users: User;
+    categories: Category;
     blogs: Blog;
     tours: Tour;
     destinations: Destination;
     reviews: Review;
     bookings: Booking;
+    'front-end-integration': FrontEndIntegration;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {};
   collectionsSelect: {
-    users: UsersSelect<false> | UsersSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
+    users: UsersSelect<false> | UsersSelect<true>;
+    categories: CategoriesSelect<false> | CategoriesSelect<true>;
     blogs: BlogsSelect<false> | BlogsSelect<true>;
     tours: ToursSelect<false> | ToursSelect<true>;
     destinations: DestinationsSelect<false> | DestinationsSelect<true>;
     reviews: ReviewsSelect<false> | ReviewsSelect<true>;
     bookings: BookingsSelect<false> | BookingsSelect<true>;
+    'front-end-integration': FrontEndIntegrationSelect<false> | FrontEndIntegrationSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -97,9 +102,13 @@ export interface Config {
   globals: {};
   globalsSelect: {};
   locale: null;
-  user: User & {
-    collection: 'users';
-  };
+  user:
+    | (User & {
+        collection: 'users';
+      })
+    | (FrontEndIntegration & {
+        collection: 'front-end-integration';
+      });
   jobs: {
     tasks: unknown;
     workflows: unknown;
@@ -123,29 +132,23 @@ export interface UserAuthOperations {
     password: string;
   };
 }
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "users".
- */
-export interface User {
-  id: number;
-  updatedAt: string;
-  createdAt: string;
-  email: string;
-  resetPasswordToken?: string | null;
-  resetPasswordExpiration?: string | null;
-  salt?: string | null;
-  hash?: string | null;
-  loginAttempts?: number | null;
-  lockUntil?: string | null;
-  sessions?:
-    | {
-        id: string;
-        createdAt?: string | null;
-        expiresAt: string;
-      }[]
-    | null;
-  password?: string | null;
+export interface FrontEndIntegrationAuthOperations {
+  forgotPassword: {
+    email: string;
+    password: string;
+  };
+  login: {
+    email: string;
+    password: string;
+  };
+  registerFirstUser: {
+    email: string;
+    password: string;
+  };
+  unlock: {
+    email: string;
+    password: string;
+  };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -168,16 +171,53 @@ export interface Media {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "users".
+ */
+export interface User {
+  id: number;
+  name: string;
+  profileImage?: (number | null) | Media;
+  isAuthor?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories".
+ */
+export interface Category {
+  id: number;
+  name: string;
+  /**
+   * Automatically generated from the name
+   */
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "blogs".
  */
 export interface Blog {
   id: number;
   title: string;
   slug: string;
-  author: number | User;
-  publishedDate: string;
-  status: 'draft' | 'published' | 'archived';
-  excerpt: string;
   content: {
     root: {
       type: string;
@@ -193,25 +233,38 @@ export interface Blog {
     };
     [k: string]: unknown;
   };
+  excerpt: string;
   coverImage: number | Media;
-  categories?:
-    | {
-        category: string;
-        id?: string | null;
-      }[]
-    | null;
+  author: number | User;
+  /**
+   * Select one or more categories for this blog post
+   */
+  categories: (number | Category)[];
   tags?:
     | {
         tag: string;
         id?: string | null;
       }[]
     | null;
-  seoTitle?: string | null;
-  seoDescription?: string | null;
+  publishedDate: string;
+  status: 'draft' | 'published' | 'archived';
   /**
-   * Select which website(s) this tour should appear on
+   * Select which website(s) this content should appear on. Selecting "All" includes all sites.
    */
-  sites: ('holiday-deals' | 'travel')[];
+  sites: ('all' | 'holiday-deals' | 'luxury-travel')[];
+  seo: {
+    seoTitle: string;
+    seoDescription: string;
+    /**
+     * Comma-separated keywords for search engines
+     */
+    seoKeywords: string;
+    canonicalURL: string;
+    /**
+     * Prevent search engines from indexing this page
+     */
+    noIndex?: boolean | null;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -221,16 +274,10 @@ export interface Blog {
  */
 export interface Tour {
   id: number;
-  name: string;
+  title: string;
   slug: string;
-  location: string;
-  duration: string;
-  price: string;
-  review?: string | null;
-  no_review?: number | null;
-  rating: number;
-  image: number | Media;
-  description?: {
+  description?: string | null;
+  content: {
     root: {
       type: string;
       children: {
@@ -244,13 +291,72 @@ export interface Tour {
       version: number;
     };
     [k: string]: unknown;
-  } | null;
-  seoTitle?: string | null;
-  seoDescription?: string | null;
+  };
   /**
-   * Select which website(s) this tour should appear on
+   * Upload multiple images to display as a gallery
    */
-  sites: ('holiday-deals' | 'travel')[];
+  gallery?: (number | Media)[] | null;
+  featured?: boolean | null;
+  pricing: {
+    basePrice: number;
+    currency: string;
+    priceIncludes?:
+      | {
+          item: string;
+          id?: string | null;
+        }[]
+      | null;
+    priceExcludes?:
+      | {
+          item: string;
+          id?: string | null;
+        }[]
+      | null;
+  };
+  duration: {
+    days: number;
+    nights: number;
+  };
+  itinerary: {
+    day: number;
+    title: string;
+    description: string;
+    activities?:
+      | {
+          activity: string;
+          id?: string | null;
+        }[]
+      | null;
+    id?: string | null;
+  }[];
+  destinations: (number | Destination)[];
+  categories: (number | Category)[];
+  availability?:
+    | {
+        startDate: string;
+        endDate: string;
+        minPeople: number;
+        maxPeople: number;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Select which website(s) this content should appear on. Selecting "All" includes all sites.
+   */
+  sites: ('all' | 'holiday-deals' | 'luxury-travel')[];
+  seo: {
+    seoTitle: string;
+    seoDescription: string;
+    /**
+     * Comma-separated keywords for search engines
+     */
+    seoKeywords: string;
+    canonicalURL: string;
+    /**
+     * Prevent search engines from indexing this page
+     */
+    noIndex?: boolean | null;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -262,17 +368,57 @@ export interface Destination {
   id: number;
   title: string;
   slug: string;
-  image: number | Media;
-  count: number;
-  category: 'hiking' | 'outdoor' | 'beach' | 'pilgrimage' | 'other';
-  featured?: boolean | null;
   description?: string | null;
-  seoTitle?: string | null;
-  seoDescription?: string | null;
+  content: {
+    root: {
+      type: string;
+      children: {
+        type: string;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  country: string;
+  region: string;
+  coordinates: {
+    lat: number;
+    lng: number;
+  };
   /**
-   * Select which website(s) this tour should appear on
+   * Upload multiple images to display as a gallery
    */
-  sites: ('holiday-deals' | 'travel')[];
+  gallery?: (number | Media)[] | null;
+  attractions?:
+    | {
+        attraction: string;
+        id?: string | null;
+      }[]
+    | null;
+  bestTimeToVisit?: string | null;
+  featured?: boolean | null;
+  /**
+   * Select which website(s) this content should appear on. Selecting "All" includes all sites.
+   */
+  sites: ('all' | 'holiday-deals' | 'luxury-travel')[];
+  seo: {
+    seoTitle: string;
+    seoDescription: string;
+    /**
+     * Comma-separated keywords for search engines
+     */
+    seoKeywords: string;
+    canonicalURL: string;
+    /**
+     * Prevent search engines from indexing this page
+     */
+    noIndex?: boolean | null;
+  };
   updatedAt: string;
   createdAt: string;
 }
@@ -313,9 +459,37 @@ export interface Booking {
   /**
    * Select which website(s) this tour should appear on
    */
-  sites: ('holiday-deals' | 'travel')[];
+  sites: ('holiday-deals' | 'luxury-travel')[];
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "front-end-integration".
+ */
+export interface FrontEndIntegration {
+  id: number;
+  title: string;
+  updatedAt: string;
+  createdAt: string;
+  enableAPIKey?: boolean | null;
+  apiKey?: string | null;
+  apiKeyIndex?: string | null;
+  email: string;
+  resetPasswordToken?: string | null;
+  resetPasswordExpiration?: string | null;
+  salt?: string | null;
+  hash?: string | null;
+  loginAttempts?: number | null;
+  lockUntil?: string | null;
+  sessions?:
+    | {
+        id: string;
+        createdAt?: string | null;
+        expiresAt: string;
+      }[]
+    | null;
+  password?: string | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -325,12 +499,16 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
+        relationTo: 'media';
+        value: number | Media;
+      } | null)
+    | ({
         relationTo: 'users';
         value: number | User;
       } | null)
     | ({
-        relationTo: 'media';
-        value: number | Media;
+        relationTo: 'categories';
+        value: number | Category;
       } | null)
     | ({
         relationTo: 'blogs';
@@ -351,12 +529,21 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'bookings';
         value: number | Booking;
+      } | null)
+    | ({
+        relationTo: 'front-end-integration';
+        value: number | FrontEndIntegration;
       } | null);
   globalSlug?: string | null;
-  user: {
-    relationTo: 'users';
-    value: number | User;
-  };
+  user:
+    | {
+        relationTo: 'users';
+        value: number | User;
+      }
+    | {
+        relationTo: 'front-end-integration';
+        value: number | FrontEndIntegration;
+      };
   updatedAt: string;
   createdAt: string;
 }
@@ -366,10 +553,15 @@ export interface PayloadLockedDocument {
  */
 export interface PayloadPreference {
   id: number;
-  user: {
-    relationTo: 'users';
-    value: number | User;
-  };
+  user:
+    | {
+        relationTo: 'users';
+        value: number | User;
+      }
+    | {
+        relationTo: 'front-end-integration';
+        value: number | FrontEndIntegration;
+      };
   key?: string | null;
   value?:
     | {
@@ -396,9 +588,30 @@ export interface PayloadMigration {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media_select".
+ */
+export interface MediaSelect<T extends boolean = true> {
+  alt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  url?: T;
+  thumbnailURL?: T;
+  filename?: T;
+  mimeType?: T;
+  filesize?: T;
+  width?: T;
+  height?: T;
+  focalX?: T;
+  focalY?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users_select".
  */
 export interface UsersSelect<T extends boolean = true> {
+  name?: T;
+  profileImage?: T;
+  isAuthor?: T;
   updatedAt?: T;
   createdAt?: T;
   email?: T;
@@ -418,21 +631,13 @@ export interface UsersSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media_select".
+ * via the `definition` "categories_select".
  */
-export interface MediaSelect<T extends boolean = true> {
-  alt?: T;
+export interface CategoriesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
   updatedAt?: T;
   createdAt?: T;
-  url?: T;
-  thumbnailURL?: T;
-  filename?: T;
-  mimeType?: T;
-  filesize?: T;
-  width?: T;
-  height?: T;
-  focalX?: T;
-  focalY?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -441,27 +646,29 @@ export interface MediaSelect<T extends boolean = true> {
 export interface BlogsSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
-  author?: T;
-  publishedDate?: T;
-  status?: T;
-  excerpt?: T;
   content?: T;
+  excerpt?: T;
   coverImage?: T;
-  categories?:
-    | T
-    | {
-        category?: T;
-        id?: T;
-      };
+  author?: T;
+  categories?: T;
   tags?:
     | T
     | {
         tag?: T;
         id?: T;
       };
-  seoTitle?: T;
-  seoDescription?: T;
+  publishedDate?: T;
+  status?: T;
   sites?: T;
+  seo?:
+    | T
+    | {
+        seoTitle?: T;
+        seoDescription?: T;
+        seoKeywords?: T;
+        canonicalURL?: T;
+        noIndex?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -470,19 +677,71 @@ export interface BlogsSelect<T extends boolean = true> {
  * via the `definition` "tours_select".
  */
 export interface ToursSelect<T extends boolean = true> {
-  name?: T;
+  title?: T;
   slug?: T;
-  location?: T;
-  duration?: T;
-  price?: T;
-  review?: T;
-  no_review?: T;
-  rating?: T;
-  image?: T;
   description?: T;
-  seoTitle?: T;
-  seoDescription?: T;
+  content?: T;
+  gallery?: T;
+  featured?: T;
+  pricing?:
+    | T
+    | {
+        basePrice?: T;
+        currency?: T;
+        priceIncludes?:
+          | T
+          | {
+              item?: T;
+              id?: T;
+            };
+        priceExcludes?:
+          | T
+          | {
+              item?: T;
+              id?: T;
+            };
+      };
+  duration?:
+    | T
+    | {
+        days?: T;
+        nights?: T;
+      };
+  itinerary?:
+    | T
+    | {
+        day?: T;
+        title?: T;
+        description?: T;
+        activities?:
+          | T
+          | {
+              activity?: T;
+              id?: T;
+            };
+        id?: T;
+      };
+  destinations?: T;
+  categories?: T;
+  availability?:
+    | T
+    | {
+        startDate?: T;
+        endDate?: T;
+        minPeople?: T;
+        maxPeople?: T;
+        id?: T;
+      };
   sites?: T;
+  seo?:
+    | T
+    | {
+        seoTitle?: T;
+        seoDescription?: T;
+        seoKeywords?: T;
+        canonicalURL?: T;
+        noIndex?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -493,14 +752,35 @@ export interface ToursSelect<T extends boolean = true> {
 export interface DestinationsSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
-  image?: T;
-  count?: T;
-  category?: T;
-  featured?: T;
   description?: T;
-  seoTitle?: T;
-  seoDescription?: T;
+  content?: T;
+  country?: T;
+  region?: T;
+  coordinates?:
+    | T
+    | {
+        lat?: T;
+        lng?: T;
+      };
+  gallery?: T;
+  attractions?:
+    | T
+    | {
+        attraction?: T;
+        id?: T;
+      };
+  bestTimeToVisit?: T;
+  featured?: T;
   sites?: T;
+  seo?:
+    | T
+    | {
+        seoTitle?: T;
+        seoDescription?: T;
+        seoKeywords?: T;
+        canonicalURL?: T;
+        noIndex?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }
@@ -536,6 +816,32 @@ export interface BookingsSelect<T extends boolean = true> {
   sites?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "front-end-integration_select".
+ */
+export interface FrontEndIntegrationSelect<T extends boolean = true> {
+  title?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  enableAPIKey?: T;
+  apiKey?: T;
+  apiKeyIndex?: T;
+  email?: T;
+  resetPasswordToken?: T;
+  resetPasswordExpiration?: T;
+  salt?: T;
+  hash?: T;
+  loginAttempts?: T;
+  lockUntil?: T;
+  sessions?:
+    | T
+    | {
+        id?: T;
+        createdAt?: T;
+        expiresAt?: T;
+      };
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

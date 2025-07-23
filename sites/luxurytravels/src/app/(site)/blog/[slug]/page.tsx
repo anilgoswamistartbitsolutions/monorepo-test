@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { Blog as BlogType } from "@/types/blog";
 import RichTextRenderer from "./RichRender";
+import ClientImageWithFallback from "@/components/Common/ClientImageWithFallback";
 type Props = {
   params: { slug: string };
 };
@@ -12,9 +13,12 @@ type Props = {
 async function fetchBlogPost(blogId: string): Promise<BlogType> {
   console.log("Fetching blog post with ID:", blogId);
   const res = await fetch(
-    `${process.env.PAYLOAD_CMS_API_URL}/blogs/${blogId}?depth=4&draft=false`,
+    `${process.env.PAYLOAD_CMS_API_URL}/blogs/${blogId}?depth=2&draft=false`,
     {
-      cache: "no-store", // or 'force-cache' if you want caching
+      cache: "no-store",
+      headers: {
+        Authorization: `Bearer ${process.env.PAYLOAD_CMS_API_KEY || ""}`,
+      },
     }
   );
   if (!res.ok) {
@@ -79,8 +83,6 @@ export default async function Post({ params }: any) {
   const data = await params;
   const post = await fetchBlogPost(data?.slug);
 
-  const content = await markdownToHtml(post.content || "");
-
   return (
     <>
       <section className=" relative pt-44 bg-linear-to-b from-white from-10% dark:from-darkmode to-herobg to-90% dark:to-semidark">
@@ -91,38 +93,40 @@ export default async function Post({ params }: any) {
                 <span className="text-base text-midnight_text font-medium dark:text-white pr-7 border-r border-solid border-grey dark:border-dark_border w-fit">
                   {format(new Date(post?.publishedDate), "dd MMM yyyy")}
                 </span>
-                <span className="text-base text-midnight_text font-medium dark:text-white sm:pl-7 pl-0 w-fit">
+                {/* <span className="text-base text-midnight_text font-medium dark:text-white sm:pl-7 pl-0 w-fit">
                   13 Comments
-                </span>
+                </span> */}
               </div>
               <h2 className="text-midnight_text dark:text-white md:text-[40px] md:leading-[3rem] sm:text-4xl text-[28px] leading-[2.25rem] font-bold pt-7">
                 {post.title}
               </h2>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4 p-4">
-                {post?.categories?.map((category) => (
-                  <div
-                    key={category?.id}
-                    tabIndex={0}
-                    className="border border-gray-300 rounded-full px-2 py-1 text-center font-medium cursor-pointer select-none
-                 bg-gray-100 hover:bg-gray-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 text-dark dark:text-white"
-                  >
-                    {category?.category}
-                  </div>
-                ))}
-              </div>
+              {post?.categories && post?.categories.length > 0 && (
+                <div className="mb-3 mt-2 flex gap-2 ">
+                  {post.categories.map((cat, idx) => (
+                    <span
+                      key={idx}
+                      className="text-sm font-semibold px-3 py-1 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-200 shadow-sm"
+                    >
+                      {cat?.name}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
             <div className="flex items-center md:justify-center justify-start gap-6 col-span-4 pt-4 md:pt-0">
-              <Image
-                src={`${process.env.PAYLOAD_CMS_MEDIA_URL}/${post?.coverImage?.url}`}
+              <ClientImageWithFallback
+                src={`${process.env.PAYLOAD_CMS_MEDIA_URL}/${post?.author?.profileImage?.url}`}
                 alt="image"
                 className="bg-no-repeat bg-contain inline-block rounded-full w-20! h-20!"
                 width={40}
                 height={40}
                 quality={100}
+                fallbackSrc="/images/default/no-user-image.webp"
               />
+
               <div className="">
                 <span className="text-[22px] leading-[2rem] font-bold text-midnight_text dark:text-white">
-                  {post?.author?.email || post?.author}
+                  {post?.author?.name}
                 </span>
                 <p className="text-xl text-gray dark:text-white">Author</p>
               </div>
@@ -135,13 +139,14 @@ export default async function Post({ params }: any) {
           <div className="-mx-4 flex flex-wrap justify-center">
             <div className="w-full px-4">
               <div className="z-20 mb-16 overflow-hidden rounded-sm">
-                <Image
+                <ClientImageWithFallback
                   src={`${process.env.PAYLOAD_CMS_MEDIA_URL}/${post?.coverImage?.url}`}
                   alt="image"
                   width={1170}
                   height={400}
                   quality={100}
                   className="h-full w-full object-cover object-center rounded-3xl"
+                  fallbackSrc="/images/default/no-blog-cover.avif"
                 />
               </div>
               <div className="-mx-4 flex flex-wrap">

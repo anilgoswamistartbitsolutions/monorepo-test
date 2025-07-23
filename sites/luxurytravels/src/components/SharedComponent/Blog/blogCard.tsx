@@ -3,6 +3,7 @@ import Image from "next/image";
 import { Blog } from "@/types/blog";
 import { format } from "date-fns";
 import Link from "next/link";
+import ClientImageWithFallback from "@/components/Common/ClientImageWithFallback";
 
 const BlogCard = ({ blog }: { blog: Blog }) => {
   const { title, coverImage, excerpt, publishedDate, slug, categories, id } =
@@ -20,7 +21,7 @@ const BlogCard = ({ blog }: { blog: Blog }) => {
       aria-label={`Read more about ${title}`}
     >
       <div className="relative w-full h-48 md:h-56 overflow-hidden">
-        <Image
+        <ClientImageWithFallback
           src={`${process.env.PAYLOAD_CMS_MEDIA_URL}/${coverImage?.url}`}
           alt={title}
           fill
@@ -28,24 +29,25 @@ const BlogCard = ({ blog }: { blog: Blog }) => {
           quality={90}
           sizes="(max-width: 768px) 100vw, 400px"
           priority={true}
+          fallbackSrc="/images/default/no-blog-cover.avif"
         />
       </div>
 
-      <div className="p-5 flex flex-col justify-between h-[220px]">
+      <div className="p-5 relative  h-[220px] ">
         {categories && categories.length > 0 && (
-          <div className="mb-3 flex flex-wrap gap-2">
+          <div className="mb-3 flex gap-2 overflow-hidden whitespace-nowrap">
             {categories.map((cat, idx) => (
               <span
                 key={idx}
                 className="text-xs font-medium px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300"
               >
-                {cat.category}
+                {cat?.name}
               </span>
             ))}
           </div>
         )}
 
-        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 line-clamp-2">
+        <h3 className="text-lg font-semibold text-gray-900 dark:text-white mb-2 line-clamp-1">
           {title}
         </h3>
 
@@ -55,7 +57,7 @@ const BlogCard = ({ blog }: { blog: Blog }) => {
 
         <time
           dateTime={publishedDate}
-          className="text-xs font-medium text-gray-400 dark:text-gray-500"
+          className="absolute bottom-5 left-5 text-xs font-medium text-gray-400 dark:text-gray-500"
         >
           {format(new Date(publishedDate), "dd MMM yyyy")}
         </time>
