@@ -1,12 +1,12 @@
 // "use client"
 import { Package } from "@/app/api/data";
-
-
+import qs from "qs";
 interface Package {
   image: string;
   price: string;
-  duration: string;
-  name: string;
+  duration: {days: number; nights: number};
+  title: string;
+  description: string;
   review: string;
   rating: number;
   slug: string | any;
@@ -15,6 +15,16 @@ interface Package {
 }
 
 async function fetchPackages(): Promise<Package[]> {
+  const query = qs.stringify(
+    {
+      where: {
+        sites: {
+          in: ["all", "luxury-travel"],
+        },
+      },
+    },
+    { encodeValuesOnly: true }
+  );
   const res = await fetch(`${process.env.PAYLOAD_CMS_API_URL}/tours`, {
     cache: "no-store", // or 'force-cache' if you want caching
   });
@@ -28,9 +38,7 @@ async function fetchPackages(): Promise<Package[]> {
 const PackageCard = async () => {
   const packages = await fetchPackages();
 
-  const filteredPackages = packages?.filter(
-    (pkg) => pkg?.sites && pkg?.sites?.includes("travel")
-  );
+  const filteredPackages = packages;
 
   // Helper function to render stars
   const renderStars = (rating: number) => {
@@ -104,17 +112,17 @@ const PackageCard = async () => {
       {(filteredPackages ?? [])?.map((item, index) => (
         <div key={index}>
           <div className="ms-4 mt-6">
-            <p className="text-base text-grey mb-2">{item?.duration}</p>
+            <p className="text-base text-grey mb-2">
+              {item?.duration?.days} days , {item?.duration?.nights} nights
+            </p>
             <h4 className="text-midnight_text text-2xl group-hover:text-primary dark:text-white">
-              {item?.name}
+              {item?.title}
             </h4>
 
-            <p className="text-small py-2">
-              {item?.seoDescription?.split(" ").slice(0, 30).join(" ")}...
-            </p>
+            <p className="text-small py-2">{item?.description}</p>
             <div className="flex items-center gap-2 mt-2">
               <p className="text-sm text-grey">{item?.review}</p>
-              <div>{renderStars(item?.rating)}</div>
+              <div>{renderStars(5)}</div>
             </div>
           </div>
         </div>
