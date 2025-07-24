@@ -77,11 +77,11 @@ const Header: React.FC<HeaderProps> = ({
         ? 'shadow-lg dark:shadow-darkmd bg-white dark:bg-darkmode'
         : 'shadow-none bg-transparent dark:bg-transparent'
         }`}>
-      <div className='container mx-auto max-w-6xl flex items-center justify-between p-6'>
+      <div className='container relative mx-auto max-w-6xl flex items-center justify-between p-6'>
         {/* Logo */}
         <Link href='/' className='flex items-center'>
           {logoImage ? (
-            <img src={logoImage} style={{width:"150px", height:"70px"}} alt={logoText} className='h-8' />
+            <img src={logoImage} style={{width:"150px", height:"65px", borderRadius:"4px"}} alt={logoText} className=' absolute left-5'  />
           ) : (
             <span className={`text-2xl font-bold ${variantClasses[variant]}  ${!sticky && pathUrl === '/' ? '' : ''
               }`}>

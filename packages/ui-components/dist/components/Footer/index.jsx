@@ -13,7 +13,7 @@ const Footer = ({ variant = 'default', companyName = 'Holiday Deals', logoText =
           <div className='lg:col-span-5 md:col-span-4 col-span-12'>
             {/* Logo */}
             <Link href='/' className='flex items-center'>
-              {logoImage ? (<img src={logoImage} alt={logoText} className='h-8'/>) : (<span className={`text-2xl font-bold ${variantClasses[variant]}`}>
+              {logoImage ? (<img src={logoImage} alt={logoText} className='' style={{ height: "150px", width: "150px", borderRadius: "4px" }}/>) : (<span className={`text-2xl font-bold ${variantClasses[variant]}`}>
                   {logoText}
                 </span>)}
             </Link>

@@ -27,7 +27,11 @@ export default function RootLayout({
               defaultTheme="system"
             >
               <Aoscompo>
-                <Header variant="default" logoText="Holiday Deals" />
+                <Header
+                  variant="default"
+                  logoText="Holiday Deals"
+                  logoImage="/images/logo/image-header.jpg"
+                />
                 <NextTopLoader color="#2F73F2" />
                 {children}
                 <Footer
@@ -35,6 +39,8 @@ export default function RootLayout({
                   logoText="Holiday Deals"
                   contactEmail="info@holidaydeals.com"
                   companyName="Holiday Deals"
+                  logoImage="/images/logo/image-footer.jpg"
+
                 />
               </Aoscompo>
               <ScrollToTop />

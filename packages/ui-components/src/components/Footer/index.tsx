@@ -33,7 +33,7 @@ const Footer: FC<FooterProps> = ({
             {/* Logo */}
             <Link href='/' className='flex items-center'>
               {logoImage ? (
-                <img src={logoImage} alt={logoText} className='h-8' />
+                <img src={logoImage} alt={logoText} className='' style={{height:"150px",width:"150px",borderRadius:"4px"}} />
               ) : (
                 <span className={`text-2xl font-bold ${variantClasses[variant]}`}>
                   {logoText}
