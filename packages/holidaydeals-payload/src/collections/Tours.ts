@@ -1,6 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { seoGroup, siteSelection, tagField } from '@/constants/fields'
-
+import { getAverageRating } from '@/endpoints/tours/getAvgRatings'
 export const Tours: CollectionConfig = {
   slug: 'tours',
   admin: {
@@ -10,6 +10,13 @@ export const Tours: CollectionConfig = {
     read: () => true,
   },
   timestamps: true,
+  endpoints: [
+    {
+      path: '/:id/average-rating',
+      method: 'get',
+      handler: getAverageRating,
+    },
+  ],
   fields: [
     {
       name: 'title',
@@ -202,4 +209,42 @@ export const Tours: CollectionConfig = {
     siteSelection,
     seoGroup,
   ],
+  hooks: {
+    afterRead: [
+      async ({ doc, req }) => {
+        try {
+          const reviews = await req.payload.find({
+            collection: 'reviews',
+            where: {
+              tour: {
+                equals: doc.id,
+              },
+              status: {
+                equals: 'approved',
+              },
+            },
+            limit: 1000,
+            depth: 0,
+          })
+
+          const ratings = reviews.docs.map((r: any) => r.rating)
+          const total = ratings.length
+          const average =
+            total > 0 ? parseFloat((ratings.reduce((sum, r) => sum + r, 0) / total).toFixed(2)) : 0
+
+          // Inject into the doc
+          return {
+            ...doc,
+            averageRating: {
+              totalReviews: total,
+              average,
+            },
+          }
+        } catch (error) {
+          console.error('Error calculating average rating:', error)
+          return doc
+        }
+      },
+    ],
+  },
 }

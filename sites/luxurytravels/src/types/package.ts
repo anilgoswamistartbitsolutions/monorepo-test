@@ -1,10 +1,20 @@
-export type PackageType = {
-    image: string
-    name: string
-    slug: string
-    price: string
-    duration: string
-    review: string
-    no_review: string
-    rating: number
-}
+export type Package = {
+  gallery: any[];
+  image: string;
+  pricing: {
+    basePrice: number;
+    currency: string;
+  };
+  duration: { days: number; nights: number };
+  title: string;
+  description: string;
+  review: string;
+  rating: number;
+  slug: string | any;
+  sites: string[];
+  seoDescription: string;
+  averageRating: {
+    average: number;
+    totalReviews: number;
+  };
+};

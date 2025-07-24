@@ -1,25 +1,10 @@
 // "use client"
-import { Package } from "@/app/api/data";
 import ClientImageWithFallback from "@/components/Common/ClientImageWithFallback";
 import Link from "next/link";
 import getSymbolFromCurrency from "currency-symbol-map";
 
 import qs from "qs";
-interface Package {
-  image: string;
-  pricing: {
-    basePrice: number;
-    currency: string;
-  };
-  duration: { days: number; nights: number };
-  title: string;
-  description: string;
-  review: string;
-  rating: number;
-  slug: string | any;
-  sites: string[];
-  seoDescription: string;
-}
+import { Package } from "@/types/package";
 
 async function fetchPackages(): Promise<Package[]> {
   const query = qs.stringify(
@@ -146,8 +131,10 @@ const PackageCard = async () => {
               {item.title}
             </h4>
             <div className="flex items-center gap-2 mt-2">
-              <p className="text-sm text-grey">{item.review || "Excellent"}</p>
-              <div>{renderStars(5)}</div>
+              <p className="text-sm text-grey">
+                {getPackageStatus(item?.averageRating?.average || 0)}
+              </p>
+              <div>{renderStars(item?.averageRating?.average || 0)}</div>
             </div>
           </div>
         </Link>
@@ -180,3 +167,20 @@ const PackageCard = async () => {
 };
 
 export default PackageCard;
+
+const getPackageStatus = (level: number) => {
+  switch (level) {
+    case 1:
+      return "Basic";
+    case 2:
+      return "Standard";
+    case 3:
+      return "Good";
+    case 4:
+      return "Very Good";
+    case 5:
+      return "Excellent";
+    default:
+      return "No Ratings";
+  }
+};

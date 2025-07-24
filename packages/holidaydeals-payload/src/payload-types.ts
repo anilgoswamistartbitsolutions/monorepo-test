@@ -435,9 +435,9 @@ export interface Review {
   reviewText: string;
   status: 'pending' | 'approved' | 'rejected';
   /**
-   * Select which website(s) this tour should appear on
+   * Select which website(s) this content should appear on. Selecting "All" includes all sites.
    */
-  sites: ('holiday-deals' | 'travel')[];
+  sites: ('all' | 'holiday-deals' | 'luxury-travel')[];
   updatedAt: string;
   createdAt: string;
 }
