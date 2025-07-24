@@ -21,3 +21,15 @@ export const SelectedSiteOptions = [
   { label: 'Holiday Deals', value: SelectedSite.HolidayDeals },
   { label: 'Luxury Travel', value: SelectedSite.LuxuryTravel },
 ]
+
+export enum ReviewStatus {
+  Pending = 'pending',
+  Approved = 'approved',
+  Rejected = 'rejected',
+}
+
+export const ReviewStatusOptions = [
+  { label: 'Pending', value: ReviewStatus.Pending },
+  { label: 'Approved', value: ReviewStatus.Approved },
+  { label: 'Rejected', value: ReviewStatus.Rejected },
+]
