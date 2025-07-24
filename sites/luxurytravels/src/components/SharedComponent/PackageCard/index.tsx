@@ -1,10 +1,17 @@
 // "use client"
 import { Package } from "@/app/api/data";
+import ClientImageWithFallback from "@/components/Common/ClientImageWithFallback";
+import Link from "next/link";
+import getSymbolFromCurrency from "currency-symbol-map";
+
 import qs from "qs";
 interface Package {
   image: string;
-  price: string;
-  duration: {days: number; nights: number};
+  pricing: {
+    basePrice: number;
+    currency: string;
+  };
+  duration: { days: number; nights: number };
   title: string;
   description: string;
   review: string;
@@ -107,6 +114,47 @@ const PackageCard = async () => {
       </div>
     );
   };
+
+  return (
+    <div className="grid sm:grid-cols-2 grid-cols-1 gap-8">
+      {filteredPackages.map((item, index) => (
+        <Link key={index} href={`/tours/${item.slug}`} className="group">
+          <div className="relative overflow-hidden rounded-3xl">
+            <ClientImageWithFallback
+              src={`${process.env.PAYLOAD_CMS_MEDIA_URL}/${item?.gallery[0]?.url}`}
+              alt={item?.title}
+              className="group-hover:scale-110 group-hover:cursor-pointer transition-all duration-500"
+              width={408}
+              height={272}
+              style={{ width: "100%", height: "250px" }}
+              quality={100}
+              fallbackSrc="/images/default/no-blog-cover.avif"
+            />
+
+            <div className="absolute top-3 right-3 rounded-full py-1 px-4 bg-primary">
+              <p className="text-white font-medium text-sm">
+                {getSymbolFromCurrency(item?.pricing?.currency || "USD")}
+                {item?.pricing?.basePrice}
+              </p>
+            </div>
+          </div>
+          <div className="ms-4 mt-6">
+            <p className="text-base text-grey mb-2">
+              {item?.duration?.nights} Nights / {item?.duration?.days} Days
+            </p>
+            <h4 className="text-midnight_text text-2xl group-hover:text-primary dark:text-white">
+              {item.title}
+            </h4>
+            <div className="flex items-center gap-2 mt-2">
+              <p className="text-sm text-grey">{item.review || "Excellent"}</p>
+              <div>{renderStars(5)}</div>
+            </div>
+          </div>
+        </Link>
+      ))}
+    </div>
+  );
+
   return (
     <div className="grid sm:grid-cols-2 grid-cols-1 gap-8">
       {(filteredPackages ?? [])?.map((item, index) => (

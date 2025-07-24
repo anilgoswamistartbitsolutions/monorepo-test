@@ -16,7 +16,54 @@ const DestinationCard = ({ destination }: { destination: Destination }) => {
     region,
     attractions,
   } = destination;
-
+  return (
+    <div className="group mb-0 relative">
+      <Link
+        href={`/destination/${id}`}
+        aria-label="blog cover"
+        className="group"
+      >
+        <div className="mb-8 relative rounded-3xl overflow-hidden">
+          <ClientImageWithFallback
+            src={`${process.env.PAYLOAD_CMS_MEDIA_URL}/${gallery[0]?.url}`}
+            alt={title}
+            className="w-full transition group-hover:scale-125"
+            width={408}
+            height={272}
+            style={{ width: "100%", height: "250px" }}
+            quality={100}
+            fallbackSrc="/images/default/no-blog-cover.avif"
+          />
+          <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent ">
+            {attractions && attractions.length > 0 && (
+              <div className=" m-2 mb-3 flex flex-wrap-reverse flex-row items-start  max-h-[80px] overflow-hidden">
+                {attractions.map((cat, idx) => (
+                  <span
+                    key={idx}
+                    className="text-xs inline-block  mx-1 my-1 font-medium px-2 py-0.5 rounded-full bg-gray-100 dark:bg-gray-800 text-gray-600 dark:text-gray-300"
+                  >
+                    {cat?.attraction}
+                  </span>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+        <div>
+          <h3 className="mb-4 inline-block font-semibold text-midnight_text group-hover:text-primary dark:text-white dark:hover:text-primary text-[22px] leading-[2rem]">
+            {title}
+          </h3>
+          <div className=" bottom-5 left-5 text-xs font-medium text-gray-400 dark:text-gray-500">
+            <span>
+              {country}
+              {", "}
+            </span>
+            <span>{region}</span>
+          </div>
+        </div>
+      </Link>
+    </div>
+  );
   return (
     <Link
       href={`/destination/${id}`}
