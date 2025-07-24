@@ -17,7 +17,7 @@ async function fetchPackages(): Promise<Package[]> {
     },
     { encodeValuesOnly: true }
   );
-  const res = await fetch(`${process.env.PAYLOAD_CMS_API_URL}/tours`, {
+  const res = await fetch(`${process.env.PAYLOAD_CMS_API_URL}/tours?${query}`, {
     cache: "no-store", // or 'force-cache' if you want caching
   });
   if (!res.ok) {
@@ -103,7 +103,7 @@ const PackageCard = async () => {
   return (
     <div className="grid sm:grid-cols-2 grid-cols-1 gap-8">
       {filteredPackages.map((item, index) => (
-        <Link key={index} href={`/tours/${item.slug}`} className="group">
+        <Link key={index} href={`/tours/${item?.id}`} className="group">
           <div className="relative overflow-hidden rounded-3xl">
             <ClientImageWithFallback
               src={`${process.env.PAYLOAD_CMS_MEDIA_URL}/${item?.gallery[0]?.url}`}

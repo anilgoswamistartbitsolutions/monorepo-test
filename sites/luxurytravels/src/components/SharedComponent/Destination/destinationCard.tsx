@@ -77,7 +77,7 @@ const DestinationCard = ({ destination }: { destination: Destination }) => {
     >
       <div className="relative w-full h-48 md:h-56 overflow-hidden">
         <ClientImageWithFallback
-          src={`${process.env.PAYLOAD_CMS_MEDIA_URL}/${gallery[0]?.url}`}
+          src={`${process.env.NEXT_PUBLIC_PAYLOAD_CMS_MEDIA_URL}/${gallery[0]?.url}`}
           alt={title}
           fill
           style={{ objectFit: "cover", filter: "brightness(0.75)" }}

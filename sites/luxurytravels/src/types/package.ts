@@ -1,10 +1,21 @@
 export type Package = {
+  id:string;
   gallery: any[];
+  content: any;
+
   image: string;
   pricing: {
     basePrice: number;
     currency: string;
+    priceIncludes: { item: string }[];
+    priceExcludes: { item: string }[];
   };
+  itinerary: {
+    day: number;
+    title: string;
+    description: string;
+    activities: { activity: string }[];
+  }[];
   duration: { days: number; nights: number };
   title: string;
   description: string;
@@ -17,4 +28,5 @@ export type Package = {
     average: number;
     totalReviews: number;
   };
+  availability: any;
 };
